@@ -9,24 +9,12 @@ import java.util.List;
 
 import org.junit.Before;
 
+import connection.ConnectionFactory;
 import domain.Cliente;
 
 public class ClienteDAO implements IClienteDAO {
 	
-	@Before
-	public void setup() throws Exception {
-
-	  ClienteDAO clienteDAO = new ClienteDAO();
-
-	  List<Cliente> clientes = clienteDAO.buscarTodos();
-
-	  for (Cliente cliente : clientes) {
-
-	    clienteDAO.excluir(cliente);
-
-	  }
-
-	}
+	
 
 	@Override
 	public Integer cadastrar(Cliente cliente) throws Exception {
@@ -123,7 +111,6 @@ public class ClienteDAO implements IClienteDAO {
 			connection = ConnectionFactory.getConnection();
 			String sql = "SELECT * FROM TB_CLIENTE_2 ";
 			stm = connection.prepareStatement(sql);
-			stm.setString(1, cliente.getCodigo());
 			rs=stm.executeQuery();
 			
 			while(rs.next()) {
@@ -160,9 +147,9 @@ public Integer atualizar(Cliente cliente) throws Exception {
 	
 	try {
 		connection = ConnectionFactory.getConnection();
-		String sql = getSQLUpdate();
+		String sql = getSqlUpdate();
 		stm = connection.prepareStatement(sql);
-		adicionarParametrosUpdate(stm,cliente);
+		parametrosUpdate(stm,cliente);
 		return stm.executeUpdate();
 	} catch(Exception e) {
 		throw e;
@@ -176,21 +163,25 @@ public Integer atualizar(Cliente cliente) throws Exception {
 	}
 }
 
-private void adicionarParametrosUpdate(PreparedStatement stm, Cliente cliente) throws SQLException {
+private String getSqlUpdate() {
+	StringBuilder sb=new StringBuilder();
+	sb.append("UPDATE TB_CLIENTE_2 ");
+	sb.append("SET NOME = ?, CODIGO = ? ");
+	sb.append("WHERE ID = ?");
+	return sb.toString();
+	
+
+
+}
+
+private void parametrosUpdate(PreparedStatement stm, Cliente cliente) throws SQLException {
 	stm.setString(1,cliente.getNome());
 	stm.setString(2,cliente.getCodigo());
 	stm.setLong(3,cliente.getId());
 
-}
-
-private String getSQLUpdate() {
-	StringBuilder sb=new StringBuilder();
-	sb.append("UPDATE TB_CLIENTE_2 ");
-	sb.append("SET NOME = ?, CODIGO = ?");
-	sb.append("WHERE ID = ?");
-	return sb.toString();
-
 	
 }
+
+
 }
 	

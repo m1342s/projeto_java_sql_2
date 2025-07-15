@@ -16,7 +16,24 @@ import domain.Cliente;
 
 public class ClienteTest {
 	
+	@Before
+	public void setup() throws Exception {
+
+	  ClienteDAO clienteDAO = new ClienteDAO();
+
+	  List<Cliente> clientes = clienteDAO.buscarTodos();
+
+	  for (Cliente cliente : clientes) {
+
+	    clienteDAO.excluir(cliente);
+
+	  }
+
+	}
+	
 	private IClienteDAO clienteDAO;
+	
+	
 	
 	@Test
 	public void cadastrarTest() throws Exception {
@@ -113,8 +130,11 @@ public class ClienteTest {
 			
 		}
 		assertEquals(listaClientes.size(),countDelete);
+		
+		listaClientes=clienteDAO.buscarTodos();
 		assertEquals(listaClientes.size(),0);
 
+		
 
 	}
 	
