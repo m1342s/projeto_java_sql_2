@@ -18,6 +18,7 @@ public class ProdutoDAO implements IProdutoDAO {
 	public Integer cadastrar(Produto produto) throws Exception {
 		Connection connection=null;
 		PreparedStatement stm=null;
+		
 		try {
 			connection=ConnectionFactoryProduto.getConnection();
 			String sql=getSqlInsert();
@@ -25,36 +26,52 @@ public class ProdutoDAO implements IProdutoDAO {
 			parametrosInsert(stm,produto);
 			return stm.executeUpdate();
 			
-			
-		} catch(Exception e ) {
+		} catch(Exception e) {
 			throw e;
 		} finally {
-			closeConnection(connection, stm, null);
+			closeConnection(connection,stm,null);
 		}
+	
 		
 	}
 
 	
 
+		
+	
+
+
 	private void parametrosInsert(PreparedStatement stm, Produto produto) throws SQLException {
 		stm.setString(1,produto.getCodigo());
-		stm.setString(2,produto.getNome());
-
+		stm.setString(2, produto.getNome());
 		
 	}
+
+
+
+
+
+
 
 	private String getSqlInsert() {
 		StringBuilder sb= new StringBuilder();
 		sb.append("INSERT INTO PRODUTO_TABLE (ID,CODIGO,NOME) ");
 		sb.append("VALUES (nextval('SQ_PRODUTO'),?,?)");
 		return sb.toString();
-		
+
 	}
+
+
+
+
+
+
 
 	@Override
 	public Integer atualizar(Produto produto) throws Exception {
 		Connection connection=null;
 		PreparedStatement stm=null;
+		
 		try {
 			connection=ConnectionFactoryProduto.getConnection();
 			String sql=getSqlUpdate();
@@ -62,30 +79,34 @@ public class ProdutoDAO implements IProdutoDAO {
 			parametrosUpdate(stm,produto);
 			return stm.executeUpdate();
 			
-			
-		} catch(Exception e ) {
+		} catch(Exception e) {
 			throw e;
 		} finally {
-			closeConnection(connection, stm, null);
+			closeConnection(connection,stm,null);
 		}
+		
+	
+	}
+	
+	private String getSqlUpdate() {
+		StringBuilder sb=new StringBuilder();
+		sb.append("UPDATE PRODUTO_TABLE ");
+		sb.append("SET NOME = ?, CODIGO = ? ");
+		sb.append("WHERE ID = ?");
+		return sb.toString();
 	}
 
 	private void parametrosUpdate(PreparedStatement stm, Produto produto) throws SQLException {
 		stm.setString(1,produto.getNome());
 		stm.setString(2,produto.getCodigo());
 		stm.setLong(3,produto.getId());
+
 		
 	}
 
 
 
-	private String getSqlUpdate() {
-		StringBuilder sb= new StringBuilder();
-		sb.append("UPDATE PRODUTO_TABLE");
-		sb.append("SET NOME = ?, CODIGO = ? ");
-		sb.append("WHERE ID = ?");
-		return sb.toString();
-	}
+	
 
 
 
@@ -93,6 +114,7 @@ public class ProdutoDAO implements IProdutoDAO {
 	public Integer excluir(Produto produto) throws Exception {
 		Connection connection=null;
 		PreparedStatement stm=null;
+		
 		try {
 			connection=ConnectionFactoryProduto.getConnection();
 			String sql=getSqlDelete();
@@ -101,10 +123,12 @@ public class ProdutoDAO implements IProdutoDAO {
 			return stm.executeUpdate();
 			
 			
-		} catch(Exception e ) {
+			
+			
+		} catch(Exception e) {
 			throw e;
 		} finally {
-			closeConnection(connection, stm, null);
+			closeConnection(connection,stm,null);
 		}
 	}
 
@@ -116,10 +140,11 @@ public class ProdutoDAO implements IProdutoDAO {
 
 
 	private String getSqlDelete() {
-		StringBuilder sb= new StringBuilder();
-		sb.append("DELETE FROM PRODUTO_TABLE");
+		StringBuilder sb=new StringBuilder();
+		sb.append("DELETE FROM PRODUTO_TABLE ");
 		sb.append("WHERE CODIGO = ?");
 		return sb.toString();
+
 	}
 
 
@@ -135,7 +160,7 @@ public class ProdutoDAO implements IProdutoDAO {
 			connection=ConnectionFactoryProduto.getConnection();
 			String sql=getSqlSelect();
 			stm=connection.prepareStatement(sql);
-			parametrosSelect(stm,produto);
+			parametrosSelect(stm,codigo);
 			rs=stm.executeQuery();
 			
 			if(rs.next()) {
@@ -143,29 +168,34 @@ public class ProdutoDAO implements IProdutoDAO {
 				Long id=rs.getLong("ID");
 				String nome=rs.getString("NOME");
 				String cg=rs.getString("CODIGO");
-				produto.setCodigo(cg);
-				produto.setNome(nome);
 				produto.setId(id);
+				produto.setNome(nome);
+				produto.setCodigo(cg);
 
+				
+
+				
+				
 			}
 			
-		} catch(Exception e ) {
+		} catch(Exception e) {
 			throw e;
 		} finally {
-			closeConnection(connection, stm, null);
+			closeConnection(connection,stm,rs);
 		}
 		return produto;
+		
 	}
 
-	private void parametrosSelect(PreparedStatement stm, Produto produto) throws SQLException {
-		stm.setString(1,produto.getCodigo());
+	private void parametrosSelect(PreparedStatement stm, String codigo) throws SQLException {
+		stm.setString(1,codigo);
+	
 	}
-
 
 
 	private String getSqlSelect() {
-		StringBuilder sb= new StringBuilder();
-		sb.append("SELECT * FROM PRODUTO_TABLE");
+		StringBuilder sb=new StringBuilder();
+		sb.append("SELECT * FROM PRODUTO_TABLE ");
 		sb.append("WHERE CODIGO = ?");
 		return sb.toString();
 	}
@@ -177,8 +207,9 @@ public class ProdutoDAO implements IProdutoDAO {
 		Connection connection=null;
 		PreparedStatement stm=null;
 		ResultSet rs=null;
-		List<Produto>listaDeProdutos=new ArrayList<>();
+		List<Produto> listaDeProdutos=new ArrayList<>();
 		Produto produto=null;
+		
 		try {
 			connection=ConnectionFactoryProduto.getConnection();
 			String sql=getSqlSelectTodos();
@@ -190,26 +221,32 @@ public class ProdutoDAO implements IProdutoDAO {
 				Long id=rs.getLong("ID");
 				String nome=rs.getString("NOME");
 				String cg=rs.getString("CODIGO");
-				produto.setCodigo(cg);
-				produto.setNome(nome);
 				produto.setId(id);
+				produto.setNome(nome);
+				produto.setCodigo(cg);
 				listaDeProdutos.add(produto);
+
 				
 
+				
+				
 			}
 			
-		} catch(Exception e ) {
+		} catch(Exception e) {
 			throw e;
 		} finally {
-			closeConnection(connection, stm, null);
+			closeConnection(connection,stm,rs);
 		}
 		return listaDeProdutos;
+		
+		
 	}
 	
 	private String getSqlSelectTodos() {
 		StringBuilder sb= new StringBuilder();
 		sb.append("SELECT * FROM PRODUTO_TABLE");
 		return sb.toString();
+		
 	}
 
 

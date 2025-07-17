@@ -155,7 +155,7 @@ public class ClienteTest {
 		
 		cliente.setCodigo("02");
 		cliente.setNome("Outro Teste");
-		Integer countAtualizar=clienteDAO.atualizar(cliente);
+		Integer countAtualizar=clienteDAO.atualizar(clienteBancoDados);
 		assertTrue(countAtualizar==1);
 		
 		Cliente clienteBD1=clienteDAO.consultar("01");
