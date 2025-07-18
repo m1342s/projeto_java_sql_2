@@ -216,7 +216,7 @@ public class ProdutoDAO implements IProdutoDAO {
 			stm=connection.prepareStatement(sql);
 			rs=stm.executeQuery();
 			
-			if(rs.next()) {
+			while(rs.next()) {
 				produto=new Produto();
 				Long id=rs.getLong("ID");
 				String nome=rs.getString("NOME");
